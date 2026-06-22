@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  LayoutDashboard, FileText, Network, Search, Cpu, HardDrive, Wrench, ShieldCheck,
-  LogOut, Bell, HelpCircle, ChevronDown, Calendar, Filter, Upload,
-  MessageSquare, AlertTriangle, CheckCircle2, TrendingUp, Loader2, Send, Trash2
+  LayoutDashboard, FileText, Cpu, Upload,
+  MessageSquare, AlertTriangle, CheckCircle2, TrendingUp, Loader2, Send, Trash2,
+  LogOut, ShieldCheck, Wrench
 } from 'lucide-react';
 import { api } from './api/client';
+
 
 const TYPE_BADGE = {
   pdf: 'bg-red-50 text-red-500',
@@ -73,6 +74,7 @@ export default function AdminDashboard({ onLogout }) {
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm('Delete this document? This cannot be undone.')) return;
     try {
       await api.deleteDocument(id);
       await loadDocuments();
@@ -108,8 +110,8 @@ export default function AdminDashboard({ onLogout }) {
           <div className="p-6 flex items-center gap-2.5 border-b border-slate-800/60">
             <Cpu className="text-indigo-500 w-6 h-6" />
             <div>
-              <h2 className="text-sm font-black tracking-tight text-white leading-none">Industrial IQ</h2>
-              <span className="text-[10px] text-slate-500 font-medium tracking-wide">Knowledge Intelligence</span>
+              <h2 className="text-sm font-black tracking-tight text-white leading-none">IndusMind</h2>
+              <span className="text-[10px] text-slate-500 font-medium tracking-wide">Admin Dashboard</span>
             </div>
           </div>
 
@@ -120,23 +122,16 @@ export default function AdminDashboard({ onLogout }) {
             <div className="space-y-1">
               <span className="text-[10px] uppercase tracking-wider font-bold text-slate-500 px-3 block mb-1">Knowledge</span>
               <button onClick={handleUploadClick} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"><FileText className="w-4 h-4" /> Documents</button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"><Network className="w-4 h-4" /> Knowledge Graph</button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"><Search className="w-4 h-4" /> Search</button>
-            </div>
-            <div className="space-y-1">
-              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-500 px-3 block mb-1">Operations</span>
-              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"><HardDrive className="w-4 h-4" /> Equipment</button>
-              <button className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"><Wrench className="w-4 h-4" /> Maintenance</button>
             </div>
           </div>
         </div>
 
         <div className="p-4 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center font-bold text-xs text-white">EN</div>
+            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-xs text-white">A</div>
             <div>
-              <p className="text-xs font-bold text-white leading-tight">Admin Exec</p>
-              <p className="text-[10px] text-slate-500">Unit A Center</p>
+              <p className="text-xs font-bold text-white leading-tight">Administrator</p>
+              <p className="text-[10px] text-slate-500">IndusMind</p>
             </div>
           </div>
           <button onClick={onLogout} className="text-slate-500 hover:text-red-400 transition-colors p-1">
@@ -148,13 +143,11 @@ export default function AdminDashboard({ onLogout }) {
       {/* MAIN */}
       <div className="flex-1 flex flex-col overflow-y-auto">
         <header className="bg-white border-b border-slate-200 h-16 px-8 flex items-center justify-between sticky top-0 z-40 flex-shrink-0">
-          <div className="relative w-96">
-            <Search className="w-4 h-4 absolute left-3 top-3.5 text-slate-400" />
-            <input type="text" placeholder="Search documents, diagnostics... (⌘ K)" className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:bg-white" />
+          <div>
+            <h1 className="text-sm font-bold text-slate-900">System Command Center</h1>
+            <p className="text-[11px] text-slate-400">IndusMind — Admin Panel</p>
           </div>
-          <div className="flex items-center gap-4">
-            <Bell className="w-4 h-4 text-slate-400 cursor-pointer" />
-            <HelpCircle className="w-4 h-4 text-slate-400 cursor-pointer" />
+          <div className="flex items-center gap-3">
             <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs">A</div>
           </div>
         </header>

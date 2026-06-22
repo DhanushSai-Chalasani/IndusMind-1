@@ -27,7 +27,7 @@ function ToolPanel({ icon: Icon, title, description, presets }) {
     try {
       const res = await api.query(q);
       const citations = [
-        ...new Set((res.sources || []).map((s) => `${s.file_name || 'document'} — #${s.chunk_index}`)),
+        ...new Set((res.sources || []).map((s) => s.file_name || 'document')),
       ];
       setResult({
         question: q,
@@ -191,7 +191,7 @@ export default function UserDashboard({ onLogout }) {
       if (res.session_id) setSessionId(res.session_id);
 
       const citations = (res.sources || []).map(
-        (s) => `${s.file_name || 'document'} — #${s.chunk_index}`
+        (s) => s.file_name || 'document'
       );
       // De-duplicate citations while preserving order.
       const uniqueCitations = [...new Set(citations)];
@@ -229,7 +229,7 @@ export default function UserDashboard({ onLogout }) {
         <div className="space-y-6">
           <div className="flex items-center gap-2.5 px-2 py-1">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="font-bold tracking-tight text-zinc-100 text-lg">PlantBrain</span>
+            <span className="font-bold tracking-tight text-zinc-100 text-lg">IndusMind</span>
           </div>
 
           <nav className="space-y-1">

@@ -59,7 +59,7 @@ export default function Login({ onLoggedIn, onNavigate }) {
           <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mx-auto border border-emerald-500/20">
             <User className="w-6 h-6 text-emerald-400" />
           </div>
-          <h2 className="text-xl font-bold text-white">Industrial Knowledge Brain</h2>
+          <h2 className="text-xl font-bold text-white">IndusMind</h2>
           <p className="text-xs text-zinc-400">
             {isSupabaseConfigured
               ? 'Sign in to access the AI copilot & knowledge base'
