@@ -137,8 +137,11 @@ pytest
 
 See `.env.example`. Notable flags:
 
-- `EMBEDDING_PROVIDER` — `gemini` (768-d) or `mock` (offline deterministic). The
-  pgvector column is fixed at `EMBEDDING_DIM` (768); changing it needs a re-index.
+- `EMBEDDING_PROVIDER` — `gemini` (768-d), `huggingface` (HF Inference API,
+  `BAAI/bge-base-en-v1.5`, 768-d; set `HF_API_TOKEN`), or `mock` (offline
+  deterministic). The pgvector column is fixed at `EMBEDDING_DIM` (768); changing
+  the model's dimension needs a schema change + re-index. Switching providers
+  also requires re-indexing existing documents (different vector spaces).
 - `ENABLE_OCR` — off by default (PaddleOCR is heavy and excluded from the Vercel
   build). Enable + install paddleocr locally to process images/scanned documents.
 - `AUTH_ENABLED=false` — local dev escape hatch (returns a synthetic admin).

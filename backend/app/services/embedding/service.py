@@ -1,11 +1,13 @@
 """Embedding generation with caching and retry.
 
-Vercel-friendly: Gemini embeddings only (no torch / sentence-transformers). When
-no Gemini key is configured, a deterministic hash-based mock embedding is used so
-the system still runs locally and in tests. Mock vectors are low quality but keep
-the full pipeline exercisable offline.
+Vercel-friendly: all providers are HTTP-based (no torch / sentence-transformers
+bundled). Providers:
+  - gemini       -> Gemini Embeddings API (gemini-embedding-001, 768-d)
+  - huggingface  -> HF Inference API (BAAI/bge-base-en-v1.5, 768-d)
+  - mock         -> deterministic hash-based vectors (offline / no key)
 
-Gemini text-embedding-004 returns 768-dim vectors, matching the pgvector column.
+All produce vectors of EMBEDDING_DIM to match the pgvector column. The mock
+provider keeps the pipeline exercisable offline and in tests.
 """
 from __future__ import annotations
 
@@ -13,6 +15,7 @@ import asyncio
 import hashlib
 import math
 
+import httpx
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from app.core.config import settings
@@ -22,6 +25,8 @@ from app.services.embedding.cache import EmbeddingCache
 
 logger = get_logger(__name__)
 
+_HF_API_URL = "https://api-inference.huggingface.co/models/{model}"
+
 
 class EmbeddingService:
     """Generates embeddings for single texts or batches, with an LRU cache."""
@@ -29,14 +34,26 @@ class EmbeddingService:
     def __init__(self) -> None:
         self._dim = settings.embedding_dim
         self._cache = EmbeddingCache()
-        self._provider = "gemini" if settings.has_gemini else "mock"
-        if self._provider == "mock":
-            logger.warning(
-                "GEMINI_API_KEY not set; EmbeddingService using deterministic mock "
-                "embeddings (set the key for real retrieval quality)"
-            )
-        else:
-            logger.info("EmbeddingService provider: gemini (%d dims)", self._dim)
+        self._provider = self._resolve_provider()
+        logger.info("EmbeddingService provider: %s (%d dims)", self._provider, self._dim)
+
+    @staticmethod
+    def _resolve_provider() -> str:
+        """Pick the active provider, falling back to mock when creds are missing."""
+        requested = settings.embedding_provider.lower()
+        if requested == "gemini":
+            if settings.has_gemini:
+                return "gemini"
+            logger.warning("EMBEDDING_PROVIDER=gemini but no GEMINI_API_KEY; using mock")
+            return "mock"
+        if requested == "huggingface":
+            if settings.has_hf:
+                return "huggingface"
+            logger.warning("EMBEDDING_PROVIDER=huggingface but no HF_API_TOKEN; using mock")
+            return "mock"
+        if requested != "mock":
+            logger.warning("Unknown EMBEDDING_PROVIDER '%s'; using mock", requested)
+        return "mock"
 
     @property
     def provider(self) -> str:
@@ -80,6 +97,8 @@ class EmbeddingService:
         try:
             if self._provider == "gemini":
                 return await self._embed_gemini(texts)
+            if self._provider == "huggingface":
+                return await self._embed_huggingface(texts)
             return [self._mock_embedding(t) for t in texts]
         except Exception as exc:  # noqa: BLE001
             raise EmbeddingError(f"Embedding failed: {exc}") from exc
@@ -104,6 +123,38 @@ class EmbeddingService:
             return out
 
         return await asyncio.to_thread(_run)
+
+    async def _embed_huggingface(self, texts: list[str]) -> list[list[float]]:
+        url = _HF_API_URL.format(model=settings.hf_embedding_model)
+        headers = {"Authorization": f"Bearer {settings.hf_api_token}"}
+        payload = {"inputs": texts, "options": {"wait_for_model": True}}
+        async with httpx.AsyncClient(timeout=60) as client:
+            resp = await client.post(url, headers=headers, json=payload)
+            resp.raise_for_status()
+            data = resp.json()
+        if not isinstance(data, list):
+            raise EmbeddingError(f"Unexpected HF response: {str(data)[:200]}")
+        return [self._normalize_hf(item) for item in data]
+
+    @staticmethod
+    def _normalize_hf(item: list) -> list[float]:
+        """Reduce an HF feature-extraction result to a single sentence vector.
+
+        Sentence-transformers models return a pooled 1-D vector; plain encoders
+        return token-level 2-D embeddings, which we mean-pool over tokens.
+        """
+        if not item:
+            return []
+        if isinstance(item[0], (int, float)):
+            return [float(x) for x in item]
+        # Token-level [tokens][dim] -> mean-pool across tokens.
+        cols = len(item[0])
+        sums = [0.0] * cols
+        for row in item:
+            for j, value in enumerate(row):
+                sums[j] += float(value)
+        n = len(item)
+        return [s / n for s in sums]
 
     def _mock_embedding(self, text: str) -> list[float]:
         """Deterministic pseudo-embedding from a hash, L2-normalised."""

@@ -43,10 +43,15 @@ class Settings(BaseSettings):
     gemini_embedding_model: str = "models/gemini-embedding-001"
 
     # ---- Embeddings ----
-    # Gemini text-embedding-004 -> 768 dims. The pgvector column is fixed to this
-    # size, so changing the dimension requires a schema change + re-index.
-    embedding_provider: str = "gemini"  # "gemini" | "mock"
+    # The pgvector column is fixed to embedding_dim, so changing the dimension
+    # requires a schema change + re-index. Gemini (gemini-embedding-001) and
+    # HF BAAI/bge-base-en-v1.5 both produce 768-d vectors.
+    embedding_provider: str = "gemini"  # "gemini" | "huggingface" | "mock"
     embedding_dim: int = 768
+
+    # Hugging Face Inference API (HTTP; serverless/Vercel-friendly, no torch)
+    hf_api_token: str = ""
+    hf_embedding_model: str = "BAAI/bge-base-en-v1.5"
 
     # ---- Chunking / retrieval ----
     chunk_size: int = 1000
@@ -93,6 +98,10 @@ class Settings(BaseSettings):
     @property
     def has_gemini(self) -> bool:
         return bool(self.gemini_api_key)
+
+    @property
+    def has_hf(self) -> bool:
+        return bool(self.hf_api_token)
 
     @property
     def has_supabase(self) -> bool:

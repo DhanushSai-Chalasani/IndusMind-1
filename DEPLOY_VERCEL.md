@@ -41,7 +41,9 @@ Backend (Python function):
 | `SUPABASE_JWT_SECRET` | JWT secret / secret key value |
 | `SUPABASE_ANON_KEY` | your `anon` (or `sb_publishable_` format) key |
 | `SUPABASE_BUCKET` | `documents` |
-| `GEMINI_API_KEY` | your Gemini API key |
+| `GEMINI_API_KEY` | your Gemini API key (for `EMBEDDING_PROVIDER=gemini`) |
+| `EMBEDDING_PROVIDER` | `gemini` (default) or `huggingface` |
+| `HF_API_TOKEN` | only if `EMBEDDING_PROVIDER=huggingface` (HF Inference API token) |
 | `AUTH_ENABLED` | `true` |
 | `AUTO_CREATE_TABLES` | `true` (executes `schema.sql` automatically on startup) |
 | `CORS_ORIGINS` | not needed for same-origin, but harmless to set your domain |
