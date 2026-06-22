@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     environment: str = "development"
     log_level: str = "INFO"
     api_v1_prefix: str = "/api/v1"
-    cors_origins: str = "http://localhost:3000,http://localhost:5173"
+    cors_origins: str = "http://localhost:3000,http://localhost:5173,https://indusmind-1.vercel.app,https://*.vercel.app"
 
     # ---- Auth ----
     auth_enabled: bool = True
