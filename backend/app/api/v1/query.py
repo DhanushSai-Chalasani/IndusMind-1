@@ -11,6 +11,7 @@ from app.core.deps import get_container, get_db, require_user
 from app.core.exceptions import NotFoundError
 from app.models.schemas import (
     CurrentUser,
+    DocumentOut,
     QueryRequest,
     QueryResponse,
     SearchRequest,
@@ -20,8 +21,19 @@ from app.models.schemas import (
     SummarizeResponse,
 )
 from app.repositories.chat_repo import ChatRepository
+from app.repositories.document_repo import DocumentRepository
 
 router = APIRouter(tags=["copilot"])
+
+
+@router.get("/library", response_model=list[DocumentOut])
+async def library(
+    _: Annotated[CurrentUser, Depends(require_user)],
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> list[DocumentOut]:
+    """Read-only document list for the copilot sidebar (any authenticated user)."""
+    docs = await DocumentRepository(db).list_all(limit=200)
+    return [DocumentOut.model_validate(d) for d in docs]
 
 
 @router.post("/query", response_model=QueryResponse)
