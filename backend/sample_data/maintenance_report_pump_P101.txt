@@ -1,0 +1,34 @@
+MAINTENANCE REPORT
+Asset: Centrifugal Pump P101 (Unit A, Cooling Water Circuit)
+Report Date: 2025-03-14
+Technician: R. Mehta (Mechanical Maintenance)
+Work Order: WO-2025-0412
+
+SUMMARY
+Pump P101 was taken offline following a high-vibration alarm on the drive-end
+bearing. Vibration trend showed a steady rise from 2.1 mm/s to 7.8 mm/s RMS over
+six weeks. On disassembly the drive-end bearing (SKF 6312) showed severe outer-race
+spalling consistent with bearing wear and inadequate lubrication.
+
+FINDINGS
+- Drive-end bearing: outer-race spalling, confirmed bearing wear failure mode.
+- Lubrication: grease was degraded and contaminated with cooling-water ingress.
+- Mechanical seal: minor weeping, within tolerance, not replaced.
+- Coupling alignment: 0.18 mm offset, slightly above the 0.10 mm spec.
+
+ACTIONS TAKEN
+- Replaced both drive-end and non-drive-end bearings.
+- Re-greased with the specified high-temperature lithium-complex grease.
+- Re-aligned the motor-pump coupling to 0.06 mm offset.
+- Reset vibration baseline; post-repair vibration 1.4 mm/s RMS.
+
+ROOT CAUSE
+Primary: bearing wear accelerated by water-contaminated lubricant.
+Contributing: coupling misalignment increasing bearing load.
+
+RECOMMENDATIONS
+- Inspect bearing seals on the sister pump P102 (same service, same age).
+- Reduce regrease interval from 6 months to 3 months for Unit A cooling pumps.
+- Add P101 to the monthly vibration route.
+
+STATUS: Returned to service 2025-03-15, operating normally.

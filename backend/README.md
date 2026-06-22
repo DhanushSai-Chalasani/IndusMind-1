@@ -99,6 +99,24 @@ resolves the role from `profiles`. `require_admin` guards write endpoints;
 | GET    | `/api/v1/chat/sessions`           | user  |
 | GET    | `/api/v1/chat/sessions/{id}`      | user  |
 
+## Demo seed
+
+Load sample industrial documents (`backend/sample_data/`) and run example queries
+against a running backend:
+
+```bash
+# easiest: start the API with AUTH_ENABLED=false, then
+cd backend
+python scripts/seed.py
+
+# against an auth-enabled API, pass an admin Supabase access token
+SEED_TOKEN=<jwt> API_URL=http://localhost:8000 python scripts/seed.py
+```
+
+It uploads 5 sample docs (pump maintenance report, boiler inspection + startup SOP,
+compressor incident report, equipment CSV log), waits for ingestion, then asks demo
+questions like *"Why did Pump P101 fail?"* and *"What inspections are overdue?"*.
+
 ## Tests
 
 ```bash

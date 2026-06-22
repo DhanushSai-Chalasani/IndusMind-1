@@ -1,0 +1,34 @@
+STANDARD OPERATING PROCEDURE (SOP)
+Title: Cold Start-up of Fire-tube Boiler B201
+Document: SOP-OPS-014, Rev 3
+Applies To: Unit B Steam Generation, Boiler B201
+Owner: Operations Superintendent
+
+1. PURPOSE
+Define the safe sequence for cold start-up of Boiler B201 from a depressurised,
+cold condition to normal operating pressure (15.5 bar).
+
+2. PRE-START CHECKS
+2.1 Confirm the latest inspection is valid and no outstanding safety actions exist.
+2.2 Verify PRV-102 is in service and certified.
+2.3 Check gauge glass for correct water level; confirm low-water cut-off is armed.
+2.4 Confirm fuel-gas supply pressure is 1.2-1.5 bar at the burner train.
+2.5 Verify all fireside access doors are closed and interlocks healthy.
+
+3. START-UP SEQUENCE
+3.1 Open the vent valve to ensure the boiler is not pressurised.
+3.2 Establish burner purge for a minimum of 5 minutes (5 air changes).
+3.3 Light the pilot, prove flame, then admit main fuel at minimum fire.
+3.4 Raise pressure slowly: do not exceed 1 bar rise per 10 minutes to limit
+    thermal stress on the tube sheet.
+3.5 Close the vent valve once steam issues steadily (around 1.5 bar).
+3.6 Continue to operating pressure; confirm PRV does not lift below 16.5 bar.
+
+4. ABNORMAL CONDITION: GAS PRESSURE ABNORMALITY
+4.1 On low or unstable fuel-gas pressure, isolate fuel gas at the manual shut-off
+    valve at the battery limit.
+4.2 Activate emergency depressurisation to bring internal pressure below 0.5 bar.
+4.3 Notify the shift supervisor and maintain the 15-metre exclusion zone.
+
+5. NORMAL OPERATION HANDOVER
+Record start-up time, final pressure, and any deviations in the operations log.

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   MessageSquare, ShieldCheck, Activity, FileText,
-  Upload, AlertCircle, LogOut, Loader2
+  Upload, LogOut, Loader2
 } from 'lucide-react';
 import { api } from './api/client';
 
@@ -10,6 +10,133 @@ const STATUS_COLOR = {
   processing: 'bg-amber-400',
   failed: 'bg-red-500',
 };
+
+// Reusable analysis tool: preset prompt buttons + free-text, backed by /query.
+function ToolPanel({ icon: Icon, title, description, presets }) {
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState('');
+  const [custom, setCustom] = useState('');
+
+  const run = async (question) => {
+    const q = (question || '').trim();
+    if (!q || loading) return;
+    setLoading(true);
+    setErr('');
+    setResult(null);
+    try {
+      const res = await api.query(q);
+      const citations = [
+        ...new Set((res.sources || []).map((s) => `${s.file_name || 'document'} — #${s.chunk_index}`)),
+      ];
+      setResult({
+        question: q,
+        answer: res.answer,
+        citations,
+        confidence: Math.round((res.confidence_score || 0) * 100),
+      });
+    } catch (e) {
+      setErr(e.message || 'Query failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex-1 bg-zinc-900 rounded-xl border border-zinc-800 p-6 space-y-5 overflow-y-auto">
+      <div className="flex items-center gap-2.5">
+        <div className="w-8 h-8 bg-zinc-800 rounded-lg flex items-center justify-center">
+          <Icon className="w-4 h-4 text-emerald-400" />
+        </div>
+        <div>
+          <h2 className="text-base font-semibold text-zinc-100">{title}</h2>
+          <p className="text-xs text-zinc-400">{description}</p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">Suggested analyses</span>
+        <div className="flex flex-wrap gap-2">
+          {presets.map((p, i) => (
+            <button
+              key={i}
+              onClick={() => run(p)}
+              disabled={loading}
+              className="text-left text-xs bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 px-3 py-2 rounded-lg transition-colors disabled:opacity-60"
+            >
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          run(custom);
+          setCustom('');
+        }}
+        className="flex gap-2"
+      >
+        <input
+          value={custom}
+          onChange={(e) => setCustom(e.target.value)}
+          placeholder="Or ask your own question…"
+          disabled={loading}
+          className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-2.5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none disabled:opacity-60"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-zinc-100 hover:bg-white text-zinc-950 text-xs font-semibold px-4 rounded-lg disabled:opacity-60"
+        >
+          Run
+        </button>
+      </form>
+
+      {loading && (
+        <div className="flex items-center gap-2 text-xs text-zinc-400">
+          <Loader2 className="w-3.5 h-3.5 animate-spin" /> Analyzing the knowledge base…
+        </div>
+      )}
+      {err && <p className="text-xs text-red-400">{err}</p>}
+
+      {result && (
+        <div className="bg-zinc-950/50 border border-zinc-800 rounded-xl p-4 space-y-3">
+          <p className="text-[11px] text-zinc-500">{result.question}</p>
+          <p className="text-[13px] text-zinc-200 leading-relaxed whitespace-pre-wrap">{result.answer}</p>
+          {result.citations.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {result.citations.map((c, i) => (
+                <span key={i} className="flex items-center gap-1.5 bg-zinc-800 border border-zinc-700/60 px-2.5 py-1 rounded text-[11px] font-mono text-zinc-400">
+                  <FileText className="w-3 h-3" /> {c}
+                </span>
+              ))}
+            </div>
+          )}
+          <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+            <div className="w-20 bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+              <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${result.confidence}%` }} />
+            </div>
+            <span>{result.confidence}% confidence</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const COMPLIANCE_PRESETS = [
+  'What inspections or actions are overdue?',
+  'What compliance gaps exist for Boiler B201?',
+  'List any safety deviations found across the reports.',
+];
+
+const RCA_PRESETS = [
+  'Why did Pump P101 fail?',
+  'What is the probable root cause of the Compressor C101 trip?',
+  'What recurring failures are occurring in Unit A?',
+];
 
 export default function UserDashboard({ onLogout }) {
   const [activeView, setActiveView] = useState('copilot');
@@ -261,20 +388,21 @@ export default function UserDashboard({ onLogout }) {
         )}
 
         {activeView === 'compliance' && (
-          <div className="flex-1 bg-zinc-900 rounded-xl border border-zinc-800 p-6 space-y-4">
-            <h2 className="text-base font-semibold text-zinc-100">Compliance scan engine</h2>
-            <div className="border border-zinc-800 bg-zinc-950/40 rounded-xl p-4 flex gap-3 text-xs text-zinc-300">
-              <AlertCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <div><span className="font-semibold block text-zinc-200 mb-1">Ask the copilot</span>Use the Knowledge copilot to ask "What compliance gaps exist for Unit A?" — answers are generated from your uploaded SOPs and inspection reports.</div>
-            </div>
-          </div>
+          <ToolPanel
+            icon={ShieldCheck}
+            title="Compliance scan"
+            description="Surface compliance gaps and overdue actions from your SOPs and inspection reports."
+            presets={COMPLIANCE_PRESETS}
+          />
         )}
 
         {activeView === 'rca' && (
-          <div className="flex-1 bg-zinc-900 rounded-xl border border-zinc-800 p-6 space-y-4">
-            <h2 className="text-base font-semibold text-zinc-100">Root cause analysis (RCA) assistant</h2>
-            <p className="text-xs text-zinc-400">Ask the copilot questions like "Why did Pump P101 fail?" to get a source-backed probable root cause from incident and maintenance records.</p>
-          </div>
+          <ToolPanel
+            icon={Activity}
+            title="Root cause analysis"
+            description="Probable root causes drawn from incident and maintenance records."
+            presets={RCA_PRESETS}
+          />
         )}
       </main>
     </div>

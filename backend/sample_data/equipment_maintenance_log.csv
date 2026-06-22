@@ -1,0 +1,10 @@
+date,equipment_id,equipment_type,unit,activity,failure_type,result,technician
+2024-09-12,C101,Compressor,Unit A,Valve replacement,2nd-stage valve fatigue,Repaired,A. Khan
+2024-11-03,P102,Pump,Unit A,Bearing inspection,None,Pass,R. Mehta
+2025-01-20,B201,Boiler,Unit B,Soot blower service,Soot blower intermittent,Repaired,S. Iyer
+2025-02-08,C101,Compressor,Unit A,Emergency valve replacement,2nd-stage valve fatigue,Repaired,A. Khan
+2025-03-14,P101,Pump,Unit A,Bearing replacement,Bearing wear,Repaired,R. Mehta
+2025-04-02,B201,Boiler,Unit B,Statutory inspection,PRV set point high,Action required,ACP-2291
+2025-04-18,V203,Valve,Unit A,Actuator calibration,None,Pass,S. Iyer
+2025-05-06,P101,Pump,Unit A,Vibration route check,None,Pass,R. Mehta
+2025-05-22,C102,Compressor,Unit A,Intercooler descale,Cooling water scaling,Repaired,A. Khan

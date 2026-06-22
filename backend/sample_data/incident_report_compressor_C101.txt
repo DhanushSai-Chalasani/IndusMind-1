@@ -1,0 +1,36 @@
+INCIDENT REPORT
+Asset: Reciprocating Air Compressor C101 (Unit A, Instrument Air)
+Incident Date: 2025-02-08, 02:40
+Severity: High (unplanned trip, no injuries)
+Reported By: Shift Operator, Zone 3
+
+EVENT DESCRIPTION
+Compressor C101 tripped on high discharge temperature (alarm at 165 C, trip at
+178 C). Loss of instrument air pressure dropped the header from 7.0 bar to 4.2 bar
+before the standby compressor C102 auto-started and recovered the header.
+
+IMMEDIATE CAUSE
+Discharge temperature excursion caused by a fouled intercooler and a partially
+stuck discharge valve on the 2nd stage.
+
+UNDERLYING CAUSE
+Intercooler cooling-water flow was restricted by scale build-up. The 2nd-stage
+discharge valve plate showed fatigue cracking — a repeat of the failure mode seen
+on C101 in 2024-09 (see prior incident INC-2024-0731).
+
+IMPACT
+- 18-minute partial loss of instrument air.
+- Two field control valves drifted to fail-safe; no process upset.
+- No environmental release, no injury.
+
+CORRECTIVE ACTIONS
+- Replaced 2nd-stage suction and discharge valve assemblies.
+- Cleaned and descaled the intercooler; restored cooling-water flow.
+- Lowered the high-temperature pre-alarm to 155 C for earlier warning.
+
+RECURRING FAILURE NOTE
+This is the second 2nd-stage valve failure on C101 within 6 months. Recommend a
+root-cause review of valve material selection and intercooler water treatment for
+Unit A reciprocating compressors.
+
+STATUS: C101 returned to service 2025-02-09 after valve replacement.

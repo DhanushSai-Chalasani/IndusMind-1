@@ -1,0 +1,34 @@
+INSPECTION REPORT
+Asset: Fire-tube Boiler B201 (Unit B, Steam Generation)
+Inspection Type: Statutory annual internal + external inspection
+Inspection Date: 2025-04-02
+Next Inspection Due: 2026-04-02
+Inspector: Authorised Competent Person, Cert. ACP-2291
+
+SCOPE
+Internal waterside and fireside inspection, pressure-part thickness survey, and
+function test of safety devices for Boiler B201 (design pressure 17.5 bar).
+
+FINDINGS
+- Pressure relief valve PRV-102: lifted at 16.9 bar against a 16.5 bar set point.
+  Marginally high; flagged for re-testing. PRV test interval is every 6 months.
+- Tube sheet: light waterside scale, within acceptable limits after descaling.
+- Shell thickness: minimum reading 11.6 mm against 10.2 mm minimum allowable. PASS.
+- Refractory: minor cracking at the burner throat, monitor at next outage.
+- Water-level gauge glass and low-water cut-off: function tested, satisfactory.
+- Combustion: flue gas O2 4.1%, CO within limits.
+
+OVERDUE / OUTSTANDING ITEMS
+- PRV-102 re-test is OVERDUE by 3 weeks as of this inspection.
+- Fireside soot-blower on pass 2 reported intermittent; corrective WO raised.
+
+COMPLIANCE
+Boiler B201 complies with the statutory pressure-vessel inspection requirement.
+One deviation noted: overdue PRV re-test must be closed within 14 days.
+
+RECOMMENDATIONS
+- Re-test and recertify PRV-102; adjust set point to 16.5 bar.
+- Descale waterside at the next planned shutdown.
+- Track burner-throat refractory cracking.
+
+OVERALL STATUS: Fit for service with one outstanding compliance action.
