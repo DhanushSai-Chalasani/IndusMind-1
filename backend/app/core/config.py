@@ -1,6 +1,7 @@
 """Application configuration loaded from environment via pydantic-settings."""
 from __future__ import annotations
 
+import re
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -60,8 +61,37 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> list[str]:
-        """Parse the comma-separated CORS origins string into a list."""
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        """Exact CORS origins (entries without a wildcard).
+
+        Wildcard entries (e.g. ``https://*.vercel.app``) are not valid exact
+        origins for Starlette's CORSMiddleware ``allow_origins`` — they are
+        handled by :attr:`cors_origin_regex` instead.
+        """
+        return [
+            o.strip()
+            for o in self.cors_origins.split(",")
+            if o.strip() and "*" not in o
+        ]
+
+    @property
+    def cors_origin_regex(self) -> str | None:
+        """Build a regex matching any wildcard CORS entries.
+
+        Converts e.g. ``https://*.vercel.app`` to
+        ``https://[A-Za-z0-9-]+\\.vercel\\.app`` so Vercel preview deployments
+        (which get random subdomains) pass CORS. Returns None when there are no
+        wildcard entries.
+        """
+        patterns: list[str] = []
+        for raw in self.cors_origins.split(","):
+            entry = raw.strip()
+            if not entry or "*" not in entry:
+                continue
+            escaped = re.escape(entry).replace(r"\*", r"[A-Za-z0-9-]+")
+            patterns.append(escaped)
+        if not patterns:
+            return None
+        return "|".join(f"(?:{p})" for p in patterns)
 
     @property
     def has_gemini(self) -> bool:
