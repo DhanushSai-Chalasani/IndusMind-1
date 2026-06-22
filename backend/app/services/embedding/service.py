@@ -25,7 +25,10 @@ from app.services.embedding.cache import EmbeddingCache
 
 logger = get_logger(__name__)
 
-_HF_API_URL = "https://api-inference.huggingface.co/models/{model}"
+# HF Inference Providers router (the classic api-inference host is deprecated).
+_HF_API_URL = (
+    "https://router.huggingface.co/hf-inference/models/{model}/pipeline/feature-extraction"
+)
 
 
 class EmbeddingService:
@@ -127,7 +130,7 @@ class EmbeddingService:
     async def _embed_huggingface(self, texts: list[str]) -> list[list[float]]:
         url = _HF_API_URL.format(model=settings.hf_embedding_model)
         headers = {"Authorization": f"Bearer {settings.hf_api_token}"}
-        payload = {"inputs": texts, "options": {"wait_for_model": True}}
+        payload = {"inputs": texts}
         async with httpx.AsyncClient(timeout=60) as client:
             resp = await client.post(url, headers=headers, json=payload)
             resp.raise_for_status()
