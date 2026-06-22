@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, File, UploadFile, status
+from fastapi import APIRouter, Depends, File, Response, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.container import ServiceContainer
@@ -100,7 +100,7 @@ async def delete_document(
     _: Annotated[CurrentUser, Depends(require_admin)],
     db: Annotated[AsyncSession, Depends(get_db)],
     container: Annotated[ServiceContainer, Depends(get_container)],
-) -> None:
+) -> Response:
     repo = DocumentRepository(db)
     doc = await repo.get(document_id)
     if doc is None:
@@ -111,3 +111,4 @@ async def delete_document(
     if doc.storage_path:
         await container.storage.delete(doc.storage_path)
     await repo.delete(document_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
