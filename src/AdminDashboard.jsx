@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  LayoutDashboard, FileText, Cpu, Upload,
+  LayoutDashboard, FileText, Cpu, Upload, Filter,
   MessageSquare, AlertTriangle, CheckCircle2, TrendingUp, Loader2, Send, Trash2,
   LogOut, ShieldCheck, Wrench
 } from 'lucide-react';
