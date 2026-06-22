@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, User, Lock, Loader2 } from 'lucide-react';
+import { Shield, User, Lock, Loader2, Key } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 
 export default function Login({ onLoggedIn, onNavigate }) {
@@ -68,6 +68,33 @@ export default function Login({ onLoggedIn, onNavigate }) {
         </div>
 
         <div className="space-y-4">
+          {/* Quick Admin Auto-fill Box */}
+          <div
+            onClick={() => {
+              setEmail('admin@plant.internal');
+              setPassword('adminpassword');
+            }}
+            className="group cursor-pointer bg-zinc-950 hover:bg-zinc-900/60 border border-zinc-850 hover:border-emerald-600/40 rounded-xl p-3.5 transition-all duration-300 flex items-start gap-3 select-none"
+            title="Click to fill default admin credentials"
+          >
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 group-hover:scale-105 transition-transform duration-300">
+              <Key className="w-4 h-4 text-emerald-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-semibold text-zinc-300 group-hover:text-emerald-400 transition-colors">
+                  Quick Admin Credentials
+                </p>
+                <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-mono uppercase tracking-wider group-hover:bg-emerald-500/20 transition-all">
+                  Click to Fill
+                </span>
+              </div>
+              <p className="text-[10px] text-zinc-500 mt-1 font-mono truncate">
+                ID: admin@plant.internal | Pass: adminpassword
+              </p>
+            </div>
+          </div>
+
           <div className="space-y-1.5">
             <label className="text-xs text-zinc-400 font-medium">Operator ID / Email</label>
             <div className="relative">
