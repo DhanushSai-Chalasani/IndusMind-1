@@ -1,0 +1,32 @@
+# Industrial Knowledge Brain — backend stack.
+# Supabase (auth + storage + Postgres) is hosted; only the app and ChromaDB run here.
+services:
+  chromadb:
+    image: chromadb/chroma:0.5.23
+    container_name: ikb-chromadb
+    restart: unless-stopped
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+
+  api:
+    build: .
+    container_name: ikb-api
+    restart: unless-stopped
+    depends_on:
+      - chromadb
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      # Override host so the API reaches Chroma over the compose network.
+      - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
+
+volumes:
+  chroma_data:
